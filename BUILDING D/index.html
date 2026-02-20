@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Building D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="building-directory-page">
+  <div class="container"></div>
+  <a id="back" class="btn" href="../index.html">Back</a>
+  <script>
+    window.buildingData = {
+      id:'Building D',
+      name:'Building D',
+      subtitle:'Junior High and Classrooms',
+      floors:[
+        {label:'4th Floor', name:'4th Floor', rooms:['rm.d.405','rm.d.406 (vacant)']},
+        {label:'3rd Floor', name:'3rd Floor', rooms:['waterlily','matibay','malakas','rm.d.306']},
+        {label:'1st & 2nd Floors', name:'1st & 2nd Floors', rooms:['Junior High (1st)','Junior High (2nd)']}
+      ]
+    };
+  </script>
+  <script src="../script.js"></script>
+</body>
+</html>

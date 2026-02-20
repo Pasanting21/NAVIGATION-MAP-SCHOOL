@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Room</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img class="logo" src="../images/LOGO.jpg" alt="logo">
+      <div>
+        <div class="title">Room</div>
+        <div style="color:#3b4656">Room details and media</div>
+      </div>
+    </div>
+
+    <div class="room-detail">
+      <div class="media-preview">
+        <img id="media-img" style="display:none" alt="room image">
+        <video id="media-vid" style="display:none" controls></video>
+        <div id="media-empty" class="placeholder">Add a photo or video file named exactly like the room (e.g., "Newton.jpg" or "Newton.mp4") into this folder.</div>
+      </div>
+      <div class="info">
+        <h3 id="room-title">Room</h3>
+        <div class="kv"><strong>Building:</strong> <span id="building-name">-</span></div>
+        <div class="kv"><strong>Room:</strong> <span id="room-name">-</span></div>
+        <div class="actions">
+          <a id="back" class="btn" href="index.html">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      const q = Object.fromEntries(new URLSearchParams(location.search));
+      const room = q.room || 'Room';
+      const b = q.b || '';
+      document.getElementById('room-title').textContent = room;
+      document.getElementById('room-name').textContent = room;
+      document.getElementById('building-name').textContent = b;
+      const img = document.getElementById('media-img');
+      const vid = document.getElementById('media-vid');
+      const empty = document.getElementById('media-empty');
+
+      function resetPreview() {
+        img.style.display = 'none';
+        vid.style.display = 'none';
+        empty.style.display = 'none';
+        img.removeAttribute('src');
+        vid.pause();
+        vid.removeAttribute('src');
+        vid.load();
+      }
+
+      function candidatesFor(ext) {
+        const raw = `${room}.${ext}`;
+        const encoded = `${encodeURIComponent(room)}.${ext}`;
+        return raw === encoded ? [raw] : [raw, encoded];
+      }
+
+      function tryImage(src) {
+        return new Promise((resolve) => {
+          const probe = new Image();
+          probe.onload = () => resolve(src);
+          probe.onerror = () => resolve('');
+          probe.src = src;
+        });
+      }
+
+      function tryVideo(src) {
+        return new Promise((resolve) => {
+          const probe = document.createElement('video');
+          probe.preload = 'metadata';
+          probe.onloadedmetadata = () => resolve(src);
+          probe.onerror = () => resolve('');
+          probe.src = src;
+        });
+      }
+
+      async function loadSelectedRoomMedia() {
+        resetPreview();
+
+        const imageExts = ['jpg', 'jpeg', 'png', 'webp'];
+        for (const ext of imageExts) {
+          for (const candidate of candidatesFor(ext)) {
+            const found = await tryImage(candidate);
+            if (found) {
+              img.src = found;
+              img.style.display = 'block';
+              return;
+            }
+          }
+        }
+
+        const videoExts = ['mp4', 'webm', 'mov'];
+        for (const ext of videoExts) {
+          for (const candidate of candidatesFor(ext)) {
+            const found = await tryVideo(candidate);
+            if (found) {
+              vid.src = found;
+              vid.style.display = 'block';
+              return;
+            }
+          }
+        }
+
+        empty.style.display = 'block';
+      }
+
+      loadSelectedRoomMedia();
+    })();
+  </script>
+</body>
+</html>
